@@ -92,6 +92,7 @@ select
     c.revenue,
     c.tax_identifier,
     c.logo,
+    c.industry_id,
     count(distinct d.id) as nb_deals,
     count(distinct co.id) as nb_contacts
 from public.companies c

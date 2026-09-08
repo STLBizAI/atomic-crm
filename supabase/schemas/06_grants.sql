@@ -94,6 +94,10 @@ grant all on table public.tags to anon;
 grant all on table public.tags to authenticated;
 grant all on table public.tags to service_role;
 
+grant all on table public.industries to anon;
+grant all on table public.industries to authenticated;
+grant all on table public.industries to service_role;
+
 grant all on table public.tasks to anon;
 grant all on table public.tasks to authenticated;
 grant all on table public.tasks to service_role;
@@ -155,6 +159,10 @@ grant all on sequence public.sales_id_seq to service_role;
 grant all on sequence public.tags_id_seq to anon;
 grant all on sequence public.tags_id_seq to authenticated;
 grant all on sequence public.tags_id_seq to service_role;
+
+grant all on sequence public.industries_id_seq to anon;
+grant all on sequence public.industries_id_seq to authenticated;
+grant all on sequence public.industries_id_seq to service_role;
 
 grant all on sequence public.tasks_id_seq to anon;
 grant all on sequence public.tasks_id_seq to authenticated;
