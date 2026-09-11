@@ -1,7 +1,7 @@
 import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
 import isEqual from "lodash/isEqual";
 import { useDataProvider, useListContext, type DataProvider } from "ra-core";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import type { Deal } from "../types";
@@ -11,22 +11,36 @@ import { getDealsByStage } from "./stages";
 
 export const DealListContent = () => {
   const { dealStages } = useConfigurationContext();
-  const { data: unorderedDeals, isPending, refetch } = useListContext<Deal>();
+  const {
+    data: unorderedDeals,
+    isPending,
+    refetch,
+    filterValues,
+  } = useListContext<Deal>();
   const dataProvider = useDataProvider();
+  const visibleStages = useMemo(
+    () =>
+      filterValues?.category
+        ? dealStages.filter((s) =>
+            s.value.startsWith(`${filterValues.category}-`),
+          )
+        : dealStages,
+    [dealStages, filterValues?.category],
+  );
 
   const [dealsByStage, setDealsByStage] = useState<DealsByStage>(
-    getDealsByStage([], dealStages),
+    getDealsByStage([], visibleStages),
   );
 
   useEffect(() => {
     if (unorderedDeals) {
-      const newDealsByStage = getDealsByStage(unorderedDeals, dealStages);
+      const newDealsByStage = getDealsByStage(unorderedDeals, visibleStages);
       if (!isEqual(newDealsByStage, dealsByStage)) {
         setDealsByStage(newDealsByStage);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [unorderedDeals]);
+  }, [unorderedDeals, visibleStages]);
 
   if (isPending) return null;
 
@@ -73,7 +87,7 @@ export const DealListContent = () => {
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div className="flex gap-4">
-        {dealStages.map((stage) => (
+        {visibleStages.map((stage) => (
           <DealColumn
             stage={stage.value}
             deals={dealsByStage[stage.value]}
