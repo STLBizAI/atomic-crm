@@ -67,10 +67,8 @@ create policy "Enable insert for authenticated users only" on public.tasks for i
 create policy "Task Update Policy" on public.tasks for update to authenticated using (true);
 create policy "Task Delete Policy" on public.tasks for delete to authenticated using (true);
 
--- Configuration (admin-only for writes)
+-- Configuration (read-only; config is owned by src/App.tsx, not the Settings page)
 create policy "Enable read for authenticated" on public.configuration for select to authenticated using (true);
-create policy "Enable insert for admins" on public.configuration for insert to authenticated with check (public.is_admin());
-create policy "Enable update for admins" on public.configuration for update to authenticated using (public.is_admin()) with check (public.is_admin());
 
 -- Favicons excluded domains
 create policy "Enable access for authenticated users only" on public.favicons_excluded_domains to authenticated using (true) with check (true);
