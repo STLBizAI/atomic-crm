@@ -51,11 +51,13 @@ create table public.contacts (
     linkedin_url text,
     email_jsonb jsonb,
     phone_jsonb jsonb,
-    lead_source text,
+    lead_source text, 
+    referred_by_id bigint,
     constraint contacts_lead_source_valid check (
     lead_source is null
     or lead_source in ('bni', 'referral', 'friend', 'event', 'other')
-    )
+    ),
+    constraint contacts_referred_by_not_self check (referred_by_id <> id)
 );
 
 create table public.contact_notes (
@@ -168,6 +170,9 @@ alter table public.contacts
     add constraint contacts_company_id_fkey foreign key (company_id) references public.companies(id) on update cascade on delete cascade;
 
 alter table public.contacts
+    add constraint contacts_referred_by_id_fkey foreign key (referred_by_id) references public.contacts(id) on update cascade on delete set null;
+
+alter table public.contacts
     add constraint contacts_sales_id_fkey foreign key (sales_id) references public.sales(id);
 
 alter table public.contact_notes
@@ -206,6 +211,7 @@ alter table only public.deal_notes
 --
 
 create index contact_notes_contact_id_idx on public.contact_notes using btree (contact_id);
+create index contacts_referred_by_id_idx on public.contacts using btree (referred_by_id);
 create index contacts_company_id_idx on public.contacts using btree (company_id);
 create index deal_notes_deal_id_idx on public.deal_notes using btree (deal_id);
 create index deals_company_id_idx on public.deals using btree (company_id);
