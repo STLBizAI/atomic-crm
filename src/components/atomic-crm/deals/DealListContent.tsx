@@ -90,7 +90,7 @@ export const DealListContent = () => {
         {visibleStages.map((stage) => (
           <DealColumn
             stage={stage.value}
-            deals={dealsByStage[stage.value]}
+            deals={dealsByStage[stage.value] ?? []}
             key={stage.value}
           />
         ))}
